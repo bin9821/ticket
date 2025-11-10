@@ -26,10 +26,16 @@
 
         <div class="flex items-center justify-end mt-4">
 
-            <x-primary-button type="button" class="ms-3" onclick="showReadMe()">
+            {{-- <x-primary-button type="button" class="ms-3" onclick="showReadMe()">
                 {{ __('Read Me') }}
-            </x-primary-button>
-            
+            </x-primary-button> --}}
+
+            <a href="https://github.com/bin9821/ticket/tree/main" target="_blank">
+                <x-primary-button class="ms-3" type="button">
+                    {{ __('GitHub') }}
+                </x-primary-button>
+            </a>
+
             <x-primary-button class="ms-3" formaction="{{ route('csvDownload') }}" formmethod="GET" formnovalidate>
                 {{ __('All Users CSV Download') }}
             </x-primary-button>
