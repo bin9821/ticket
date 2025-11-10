@@ -6,11 +6,11 @@
 
 ## 專案內容
 
-**all_user.csv**
+### all_user.csv
   - 測試用帳號清單，供 JMeter 讀取登入使用
-**ticket stress test.jmx**
+### ticket stress test.jmx
   - JMeter 壓力測試腳本，用於模擬多用戶同時購票
-**重置票券數量API**
+### 重置票券數量API
   - /api/ticket/resetAllTickets，method為POST
   - method為POST；重置票券不需登入，便於壓力測試多次循環。
 ---
