@@ -8,6 +8,9 @@ use App\Models\Ticket;
 use App\Models\Order;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redis;
+
 
 class TicketController extends Controller
 {
@@ -31,14 +34,35 @@ class TicketController extends Controller
         ]);
     }
 
-    public function purchase(Request $request, Ticket $ticket): RedirectResponse
+    public function purchase(Request $request, $ticket_id): RedirectResponse
     {
         $user = $request->user();
-
+        $ticket_name = "ticket:" . $ticket_id;
         try {
-            DB::transaction(function () use ($ticket, $user) {
+            $lua_purchase = <<< LUA
+                stock = redis.call("hget", KEYS[1], "ticket_remainder")
+                if not stock then
+                    return 0
+                end
 
-                $locked = Ticket::where('id', $ticket->id)->lockForUpdate()->first();
+                stock = tonumber(stock)
+
+                if stock >= 1 then
+                    stock = stock - 1
+                else 
+                    return 0
+                end
+                redis.call("hset", KEYS[1], "ticket_remainder", stock)
+                return 1
+            LUA;
+            
+            // (php artisan app:preload-tickets-to-redis $ticket_id) command can preload tickets from DB to redis
+            if (!Redis::eval($lua_purchase, 1, $ticket_name))
+                return Redirect::route('ticket.buy')->with('status', 'purchase-failed');
+                
+            DB::transaction(function () use ($ticket_id, $user) {
+
+                $locked = Ticket::where('id', $ticket_id)->lockForUpdate()->first();
 
                 $remaining = $locked->total_number - $locked->sold;
                 if ($remaining <= 0) {
@@ -55,9 +79,9 @@ class TicketController extends Controller
                 $order->save();
             });
         } catch (\Throwable $e) {
+            Redis::hincrby($ticket_name, "ticket_remainder", -1);
             return Redirect::route('ticket.buy')->with('status', 'purchase-failed');
         }
-
         return Redirect::route('ticket.buy')->with('status', 'purchase-success');
     }
 

@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth')->group(function () {
     Route::get('/ticket/buy', [TicketController::class, 'buy'])->name('ticket.buy');
     Route::get('/ticket/manage', [TicketController::class, 'manage'])->name('ticket.manage');
-    Route::post('/ticket/purchase/{ticket}', [TicketController::class, 'purchase'])->name('ticket.purchase');
+    Route::post('/ticket/purchase/{ticket_id}', [TicketController::class, 'purchase'])->name('ticket.purchase');
     // Route::post('/ticket/resetAllTickets', [TicketController::class, 'resetAllTickets'])->name('ticket.resetAllTickets');
 });
 

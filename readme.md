@@ -13,6 +13,9 @@
 ### 重置票券數量API
   - /api/ticket/resetAllTickets，method為POST
   - method為POST；重置票券不需登入，便於壓力測試多次循環。
+### 將票券從資料庫初始化到redis
+  - php artisan app:preload-tickets-to-redis $ticket_id
+  - ex. php artisan app:preload-tickets-to-redis 1
 ---
 
 ## 使用方法
