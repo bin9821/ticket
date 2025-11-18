@@ -1,5 +1,7 @@
 <?php
 
+use PhpAmqpLib\Connection\AMQPLazyConnection;
+
 return [
 
     /*
@@ -71,7 +73,27 @@ return [
             'block_for' => null,
             'after_commit' => false,
         ],
+        'rabbitmq' => [
+            'driver' => 'rabbitmq',
+            'queue' => env('RABBITMQ_QUEUE', 'default'),
+            'connection' => PhpAmqpLib\Connection\AMQPLazyConnection::class,
+            'hosts' => [
+                [
+                    'host' => env('RABBITMQ_HOST', '127.0.0.1'),
+                    'port' => env('RABBITMQ_PORT', 5672),
+                    'user' => env('RABBITMQ_USER', 'guest'),
+                    'password' => env('RABBITMQ_PASSWORD', 'guest'),
+                    'vhost' => env('RABBITMQ_VHOST', '/'),
+                ],
+            ],
+            'options' => [
+                'heartbeat' => 60,
+                'connection_timeout' => 3.0,
+            ],
 
+            'retry_after' => 10,
+            'after_commit' => false,
+        ],
     ],
 
     /*

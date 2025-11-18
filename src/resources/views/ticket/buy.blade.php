@@ -18,13 +18,13 @@
                     @endif
 
                     <div class="mt-4 space-y-4">
-                        @foreach($tickets as $ticket)
+                        @foreach($tickets as $ticket_id => $ticket)
                             <div class="flex items-center justify-between p-3 border rounded">
                                 <div>
-                                    <div class="font-semibold">{{ $ticket->name }}</div>
-                                    <div class="text-sm text-gray-600">剩餘: {{ $ticket->total_number - $ticket->sold }}</div>
+                                    <div class="font-semibold">{{ $ticket["ticket_name"] }}</div>
+                                    <div class="text-sm text-gray-600">剩餘: {{ $ticket["ticket_remainder"] }}</div>
                                 </div>
-                                <form method="POST" action="{{ route('ticket.purchase', $ticket) }}">
+                                <form method="POST" action="{{ route('ticket.purchase', $ticket_id + 1) }}">
                                     @csrf
                                     <button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-500 focus:outline-none">購票</button>
                                 </form>

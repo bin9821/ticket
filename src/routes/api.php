@@ -10,4 +10,4 @@ use App\Http\Controllers\TicketController;
 
 Route::post('/ticket/resetAllTickets', 
     [TicketController::class, 'resetAllTickets']
-)->name('ticket.resetAllTickets');
+)->name('ticket.resetAllTickets')->middleware('throttle:10,1');
